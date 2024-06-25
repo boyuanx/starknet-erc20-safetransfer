@@ -1,11 +1,11 @@
 use starknet::ContractAddress;
 
 /// Extended function selector as defined in SRC-5
-const ISNIP88_RECEIVER_ID: felt252 =
+const ISNIP89_RECEIVER_ID: felt252 =
     selector!("fn_on_erc20_received(ContractAddress,ContractAddress,u256,Span<felt252>)->felt252)");
 
 #[starknet::interface]
-trait ISNIP88Contract<TContractState> {
+trait ISNIP89Contract<TContractState> {
     fn safeTransferFrom(
         ref self: TContractState,
         sender: ContractAddress,
@@ -23,7 +23,7 @@ trait ISNIP88Contract<TContractState> {
 }
 
 #[starknet::interface]
-trait ISNIP88Receiver<TContractState> {
+trait ISNIP89Receiver<TContractState> {
     fn on_erc20_received(
         self: @TContractState,
         operator: ContractAddress,
@@ -44,8 +44,8 @@ trait ISNIP88Receiver<TContractState> {
 #[starknet::contract]
 mod SafeTransferERC20 {
     use erc20_safetransfer::{
-        ISNIP88Contract, ISNIP88ReceiverDispatcher, ISNIP88ReceiverDispatcherTrait,
-        ISNIP88_RECEIVER_ID
+        ISNIP89Contract, ISNIP89ReceiverDispatcher, ISNIP89ReceiverDispatcherTrait,
+        ISNIP89_RECEIVER_ID
     };
     use starknet::{ContractAddress, get_caller_address};
     use openzeppelin::token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
@@ -72,7 +72,7 @@ mod SafeTransferERC20 {
     }
 
     #[abi(embed_v0)]
-    impl SNIP88Impl of super::ISNIP88Contract<ContractState> {
+    impl SNIP89Impl of super::ISNIP89Contract<ContractState> {
         fn safeTransferFrom(
             ref self: ContractState,
             sender: ContractAddress,
@@ -98,7 +98,7 @@ mod SafeTransferERC20 {
     }
 
     #[generate_trait]
-    impl SNIP88InternalImpl of SNIP88InternalTrait {
+    impl SNIP89InternalImpl of SNIP89InternalTrait {
         fn _check_on_erc20_received(
             self: @ContractState,
             sender: ContractAddress,
@@ -107,11 +107,11 @@ mod SafeTransferERC20 {
             data: Span<felt252>,
         ) -> bool {
             let src5_dispatcher = ISRC5Dispatcher { contract_address: recipient };
-            if src5_dispatcher.supports_interface(ISNIP88_RECEIVER_ID) {
-                ISNIP88ReceiverDispatcher { contract_address: recipient }
+            if src5_dispatcher.supports_interface(ISNIP89_RECEIVER_ID) {
+                ISNIP89ReceiverDispatcher { contract_address: recipient }
                     .on_erc20_received(
                         get_caller_address(), sender, amount, data
-                    ) == ISNIP88_RECEIVER_ID
+                    ) == ISNIP89_RECEIVER_ID
             } else {
                 src5_dispatcher.supports_interface(ISRC6_ID)
             }
