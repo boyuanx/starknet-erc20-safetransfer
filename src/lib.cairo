@@ -2,9 +2,7 @@ use starknet::ContractAddress;
 
 /// Extended function selector as defined in SRC-5
 const ISNIP88_RECEIVER_ID: felt252 =
-    selector!(
-        "fn_on_erc20_received(ContractAddress,ContractAddress,u256,Span<felt252>)->felt252)"
-    );
+    selector!("fn_on_erc20_received(ContractAddress,ContractAddress,u256,Span<felt252>)->felt252)");
 
 #[starknet::interface]
 trait ISNIP88Contract<TContractState> {
