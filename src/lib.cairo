@@ -28,7 +28,7 @@ trait ISNIP88Receiver<TContractState> {
         self: @TContractState,
         operator: ContractAddress,
         from: ContractAddress,
-        token_id: u256,
+        amount: u256,
         data: Span<felt252>
     ) -> felt252;
 
@@ -36,7 +36,7 @@ trait ISNIP88Receiver<TContractState> {
         self: @TContractState,
         operator: ContractAddress,
         from: ContractAddress,
-        tokenId: u256,
+        amount: u256,
         data: Span<felt252>
     ) -> felt252;
 }
