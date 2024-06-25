@@ -3,7 +3,7 @@ use starknet::ContractAddress;
 /// Extended function selector as defined in SRC-5
 const ISNIP88_RECEIVER_ID: felt252 =
     selector!(
-        "fn_on_erc721_received(ContractAddress,ContractAddress,u256,Span<felt252>)->felt252)"
+        "fn_on_erc20_received(ContractAddress,ContractAddress,u256,Span<felt252>)->felt252)"
     );
 
 #[starknet::interface]
@@ -26,7 +26,7 @@ trait ISNIP88Contract<TContractState> {
 
 #[starknet::interface]
 trait ISNIP88Receiver<TContractState> {
-    fn on_erc721_received(
+    fn on_erc20_received(
         self: @TContractState,
         operator: ContractAddress,
         from: ContractAddress,
@@ -34,7 +34,7 @@ trait ISNIP88Receiver<TContractState> {
         data: Span<felt252>
     ) -> felt252;
 
-    fn onERC721Received(
+    fn onERC20Received(
         self: @TContractState,
         operator: ContractAddress,
         from: ContractAddress,
@@ -111,7 +111,7 @@ mod SafeTransferERC20 {
             let src5_dispatcher = ISRC5Dispatcher { contract_address: recipient };
             if src5_dispatcher.supports_interface(ISNIP88_RECEIVER_ID) {
                 ISNIP88ReceiverDispatcher { contract_address: recipient }
-                    .on_erc721_received(
+                    .on_erc20_received(
                         get_caller_address(), sender, amount, data
                     ) == ISNIP88_RECEIVER_ID
             } else {
